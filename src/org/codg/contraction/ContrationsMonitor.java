@@ -17,7 +17,6 @@ public class ContrationsMonitor extends MIDlet implements CommandListener {
     private Display display;     // The display for this MIDlet
     private long contraction_time_start = 0;
     private long start_time = 0;
-    private int number_of_contractions = 0;
     private List contractionList;
     private Form contractionRunning;
     private Vector contractions;
@@ -67,7 +66,6 @@ public class ContrationsMonitor extends MIDlet implements CommandListener {
             contractionList.deleteAll();
             contractionList.append("Contracciones cada : 0 minutos", null);
             start_time = 0;
-            number_of_contractions = 0;
             contractions.removeAllElements();
         } else if (c == contrationCommand) {
             contraction_time_start = System.currentTimeMillis();
@@ -83,10 +81,9 @@ public class ContrationsMonitor extends MIDlet implements CommandListener {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(d);
             String time = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND);
-            number_of_contractions = number_of_contractions + 1;
             long enlapsed = (System.currentTimeMillis() - start_time) / (1000 * 60);
             enlapsed = enlapsed == 0 ? 1 : enlapsed;
-            long contractionPerMinute = (enlapsed / number_of_contractions);
+            long contractionPerMinute = enlapsed / (contractions.size() +1);
             float interval = 0;
             if (!contractions.isEmpty()) {
                 Contraction lastContraction = (Contraction) contractions.lastElement();
@@ -97,7 +94,7 @@ public class ContrationsMonitor extends MIDlet implements CommandListener {
             contractionList.set(0, "Contracciones cada : " + contractionPerMinute + " minutos ", null);
             String intervalSt = String.valueOf(interval);
 
-            contractionList.append(number_of_contractions + ") " + enlapsedTime + " seg | " +
+            contractionList.append(contractions.size() + ") " + enlapsedTime + " seg | " +
                     intervalSt.substring(0, intervalSt.indexOf(".") + 2) + " min |" + time, null);
             display.setCurrent(contractionList);
         }
