@@ -93,7 +93,7 @@ public class ContrationsMonitor extends MIDlet implements CommandListener {
             contractions.addElement(new Contraction(enlapsedTime, currentTime));
             contractionList.set(0, "Contracciones cada : " + contractionPerMinute + " minutos ", null);
             String intervalSt = String.valueOf(interval);
-
+            
             contractionList.append(contractions.size() + ") " + enlapsedTime + " seg | " +
                     intervalSt.substring(0, intervalSt.indexOf(".") + 2) + " min |" + time, null);
             display.setCurrent(contractionList);
