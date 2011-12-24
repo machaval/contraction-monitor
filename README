@@ -1,1 +1,2 @@
-This file was created by IntelliJ IDEA 10.5.4 for binding GitHub repository
+This is a contractions timer for cellphones that supports j2me. 
+It will count the number of contractions per minute, and the intervale between them.
