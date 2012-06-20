@@ -31,9 +31,9 @@ public class ContrationsMonitor extends MIDlet implements CommandListener {
     }
 
     public void startApp() {
-        contractionList = new List("Contracciones", List.IMPLICIT);
-        contractionList.addCommand(contrationCommand);
+        contractionList = new List("Contracciones", List.IMPLICIT);       
         contractionList.addCommand(clearCommand);
+        contractionList.addCommand(contrationCommand);
         contractionList.addCommand(exitCommand);
         contractionList.setCommandListener(this);
         contractionList.append("Contracciones cada : 0 minutos", null);
@@ -48,8 +48,25 @@ public class ContrationsMonitor extends MIDlet implements CommandListener {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+
         contractionRunning.setCommandListener(this);
         display.setCurrent(contractionList);
+                    float interval = 0;
+                    
+        for (int i = 0 ; i < contractions.size() ; i++){
+            Contraction con = (Contraction)contractions.elementAt(i);
+            if (i > 0) {
+                Contraction lastContraction = (Contraction) contractions.lastElement();
+                int intervalMs = (int) ((con).getTime() - lastContraction.getTime());
+                interval = (intervalMs) / (1000f * 60f);
+            }
+            
+            String intervalSt = String.valueOf(interval);
+            
+            contractionList.append(contractions.size() + ") " + con.getDuration() + " seg | " +
+                    intervalSt.substring(0, intervalSt.indexOf(".") + 2) + " min |" + con.getTimeFormat(), null);
+        }
+
     }
 
     public void pauseApp() {
@@ -83,14 +100,15 @@ public class ContrationsMonitor extends MIDlet implements CommandListener {
             String time = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND);
             long enlapsed = (System.currentTimeMillis() - start_time) / (1000 * 60);
             enlapsed = enlapsed == 0 ? 1 : enlapsed;
-            long contractionPerMinute = enlapsed / (contractions.size() +1);
+            long contractionPerMinute = (contractions.size() == 0)? 0 : enlapsed / (contractions.size() );
+            contractions.addElement(new Contraction(enlapsedTime, currentTime,time));
             float interval = 0;
             if (!contractions.isEmpty()) {
                 Contraction lastContraction = (Contraction) contractions.lastElement();
                 int intervalMs = (int) (currentTime - lastContraction.getTime());
                 interval = (intervalMs) / (1000f * 60f);
             }
-            contractions.addElement(new Contraction(enlapsedTime, currentTime));
+            
             contractionList.set(0, "Contracciones cada : " + contractionPerMinute + " minutos ", null);
             String intervalSt = String.valueOf(interval);
             
